@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 IEnumerable<string> FindFiles(string folderName)
 {
@@ -54,8 +55,21 @@ var salesTotalDir = Path.Combine(currentDirectory, "salesTotalDir");
 //     Console.WriteLine(file);
 // }
 
-Directory.CreateDirectory(salesTotalDir);
+//Directory.CreateDirectory(salesTotalDir);
 
-File.WriteAllText(Path.Combine(salesTotalDir, "totals.txt"), String.Empty);
+//File.WriteAllText(Path.Combine(salesTotalDir, "totals.txt"), String.Empty);
 
+var salesJson = File.ReadAllText($"stores{Path.DirectorySeparatorChar}201{Path.DirectorySeparatorChar}sales.json");
+var salesData = JsonConvert.DeserializeObject<SalesTotal>(salesJson);
 
+var data = JsonConvert.DeserializeObject<SalesTotal>(salesJson);
+
+File.WriteAllText($"salesTotalDir{Path.DirectorySeparatorChar}totals.txt", $"{data.Total}{Environment.NewLine}");
+
+File.AppendAllText($"salesTotalDir{Path.DirectorySeparatorChar}totals.txt", $"{data.Total}{Environment.NewLine}");
+
+Console.WriteLine(salesData.Total);
+
+class SalesTotal{
+    public double Total {get;set;}
+}
